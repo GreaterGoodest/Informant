@@ -1,16 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/mman.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/mman.h>
 
-
+#include "helpers.h"
 #include "binary_parsing.h"
 
-void print_usage()
-{
-    puts("Usage: ./informant [victim binary]");
-}
 
 int main(int argc, char **argv)
 {
