@@ -8,6 +8,7 @@
 
 #include "binary_parsing.h"
 
+
 ssize_t load_binary(char *path, void **mapped_victim)
 {
     int fd = -1;
@@ -35,4 +36,24 @@ ssize_t load_binary(char *path, void **mapped_victim)
 cleanup:
     if (fd > -1) close(fd);
     return retval;
+}
+
+
+/**
+ * Determines whether binary is valid, and if so whether it is a shared object or not
+ * @param header ELF Header
+ * 
+ * @return Constant representing binary type
+ */
+int determine_type(Elf64_Ehdr *header)
+{
+    Elf64_Half header_type = header->e_type;
+    int binary_bits = header->e_ident[EI_CLASS];
+
+    if ( header_type == ET_REL || header_type == ET_CORE) return BAD_TYPE; // Core file
+    if ( binary_bits == ELFCLASS32 ) return BAD_TYPE; // 32 bit
+    if ( header_type == ET_EXEC ) return EXECUTABLE;
+    if ( header_type == ET_DYN ) return SHARED_OBJECT;
+
+    return BAD_TYPE; // Unknown
 }
