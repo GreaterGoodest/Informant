@@ -4,7 +4,4 @@ INCLUDE = -I ./include
 LIBS = 
 
 informant: main.c library/binary_parsing.c
-	$(CC) main.c library/binary_parsing.c library/helpers.c -o informant $(INCLUDE)
-
-bin:
-	mkdir bin
+	$(CC) $(CFLAG) main.c library/binary_parsing.c library/helpers.c -o informant $(INCLUDE)

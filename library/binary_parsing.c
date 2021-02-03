@@ -33,5 +33,6 @@ ssize_t load_binary(char *path, void **mapped_victim)
 
     retval = victim_size;
 cleanup:
+    if (fd > -1) close(fd);
     return retval;
 }
