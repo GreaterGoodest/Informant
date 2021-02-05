@@ -12,7 +12,7 @@
 ssize_t load_binary(char *path, void **mapped_victim)
 {
     int fd = -1;
-    int retval = 0;
+    int retval = -1;
     struct stat victim_stats;
     size_t victim_size = -1;
 
@@ -39,12 +39,6 @@ cleanup:
 }
 
 
-/**
- * Determines whether binary is valid, and if so whether it is a shared object or not
- * @param header ELF Header
- * 
- * @return Constant representing binary type
- */
 int determine_type(Elf64_Ehdr *header)
 {
     Elf64_Half header_type = header->e_type;
