@@ -16,7 +16,7 @@
  * 
  * @return Size of the loaded binary or -1 on error
  */
-ssize_t load_binary(char *path, void **mapped_victim);
+ssize_t load_binary(const char *path, void **mapped_victim);
 
 
 /**

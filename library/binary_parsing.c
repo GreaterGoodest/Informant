@@ -9,7 +9,7 @@
 #include "binary_parsing.h"
 
 
-ssize_t load_binary(char *path, void **mapped_victim)
+ssize_t load_binary(const char *path, void **mapped_victim)
 {
     int fd = -1;
     int retval = -1;
