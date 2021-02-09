@@ -16,7 +16,7 @@ int __wrap_open (const char *__path, int __oflag, ...)
     check_expected_ptr(__path);
     check_expected(__oflag);
     int retval = mock_type(int);
-    if (retval < 0) { return retval; }
+    if (retval != 0) { return retval; }
 
     return retval;
 }
@@ -24,7 +24,7 @@ int __wrap_open (const char *__path, int __oflag, ...)
 
 void __wrap_perror (const char *__s)
 {
-
+    check_expected_ptr(__s);
 }
 
 
@@ -59,10 +59,14 @@ static void test_open_failure(void ** state)
     int retval = 0;
     void *mapped_victim;
     const char *binary_name = "bad.bin";
+    const char *open_failure = "failed to open victim binary";
 
     will_return(__wrap_open, EACCES);
+
     expect_string(__wrap_open, __path, binary_name);
     expect_value(__wrap_open, __oflag, O_RDWR);
+    expect_string(__wrap_perror, __s, open_failure);
+
     retval = load_binary(binary_name, &mapped_victim);
     assert_int_equal(retval, -1);
 }

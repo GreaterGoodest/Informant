@@ -17,7 +17,7 @@ ssize_t load_binary(const char *path, void **mapped_victim)
     size_t victim_size = -1;
 
     fd = open(path, O_RDWR);
-    if (fd == -1){ perror("failed to open victim binary"); retval = -1; goto cleanup; }
+    if (fd != 0){ perror("failed to open victim binary"); retval = -1; goto cleanup; }
 
     /* Get victim stats */
     memset(&victim_stats, 0, sizeof(struct stat));    
