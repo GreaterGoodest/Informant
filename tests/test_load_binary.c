@@ -28,16 +28,16 @@ void __wrap_perror (const char *__s)
 }
 
 
-void *__wrap_memset (void *__s, int __c, size_t __n)
-{
-    return malloc(1);
-}
-
-
 int __wrap_lstat (const char *__restrict __file,
 		  struct stat *__restrict __buf)
 {
-    return -1;
+    check_expected_ptr(__file);
+    check_expected(__buf->st_size);
+
+    int retval = mock_type(int);
+    if (retval != 0) { return retval; }
+
+    return retval;
 }
 
 
@@ -61,7 +61,7 @@ static void test_open_failure(void ** state)
     const char *binary_name = "bad.bin";
     const char *open_failure = "failed to open victim binary";
 
-    will_return(__wrap_open, EACCES);
+    will_return(__wrap_open, -1);
 
     expect_string(__wrap_open, __path, binary_name);
     expect_value(__wrap_open, __oflag, O_RDWR);
@@ -71,10 +71,32 @@ static void test_open_failure(void ** state)
     assert_int_equal(retval, -1);
 }
 
+
+static void test_lstat_failure(void ** state)
+{
+    int retval = 0;
+    void *mapped_victim;
+    const char *binary_name = "bad.bin";
+    const char *lstat_failure = "failed to get victim stats";
+
+    will_return(__wrap_open, 4);
+    will_return(__wrap_lstat, -1);
+
+    expect_string(__wrap_open, __path, binary_name);
+    expect_value(__wrap_open, __oflag, O_RDWR);
+    expect_string(__wrap_lstat, __file, binary_name);
+    expect_value(__wrap_lstat, __buf->st_size, 0);
+    expect_string(__wrap_perror, __s, lstat_failure);
+
+    retval = load_binary(binary_name, &mapped_victim);
+    assert_int_equal(retval, -1);
+}
+
 int main (){
     const struct CMUnitTest tests[] =
     {
-        cmocka_unit_test(test_open_failure)
+        cmocka_unit_test(test_open_failure),
+        cmocka_unit_test(test_lstat_failure)
     };
 
     int count_fail_tests = cmocka_run_group_tests(tests, NULL, NULL);

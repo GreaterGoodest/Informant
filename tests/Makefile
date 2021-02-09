@@ -3,7 +3,7 @@ CFLAG = -Wall -g
 INCLUDE = -I ../include
 LIBS = -lcmocka
 WRAP_USAGE = -Wl,--wrap=puts
-WRAP_LB = -Wl,--wrap=open,--wrap=perror,--wrap=memset,--wrap=lstat,--wrap=mmap,--wrap=close
+WRAP_LB = -Wl,--wrap=open,--wrap=perror,--wrap=lstat,--wrap=mmap,--wrap=close
 TESTS = test_determine_type test_print_usage test_load_binary
 
 .PHONY: run_tests, clean
