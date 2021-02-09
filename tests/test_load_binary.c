@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdlib.h>
 #include <setjmp.h>
 #include <cmocka.h>
 #include <sys/types.h>
@@ -17,12 +18,39 @@ int __wrap_open (const char *__path, int __oflag, ...)
     int retval = mock_type(int);
     if (retval < 0) { return retval; }
 
+    return retval;
 }
 
 
 void __wrap_perror (const char *__s)
 {
 
+}
+
+
+void *__wrap_memset (void *__s, int __c, size_t __n)
+{
+    return malloc(1);
+}
+
+
+int __wrap_lstat (const char *__restrict __file,
+		  struct stat *__restrict __buf)
+{
+    return -1;
+}
+
+
+void *__wrap_mmap (void *__addr, size_t __len, int __prot,
+		   int __flags, int __fd, __off_t __offset)
+{
+    return malloc(1);
+}
+
+
+int __wrap_close (int __fd)
+{
+    return 0;
 }
 
 
