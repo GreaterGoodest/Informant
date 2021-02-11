@@ -30,7 +30,7 @@ ssize_t load_binary(const char *path, void **mapped_victim)
      */
     victim_size = victim_stats.st_size;
     *mapped_victim = mmap(NULL, victim_size, PROT_WRITE, MAP_SHARED, fd, 0);
-    if (mapped_victim == MAP_FAILED){ perror("Failed to map victim"); retval = -1; goto cleanup; }
+    if (*mapped_victim == MAP_FAILED){ perror("Failed to map victim"); retval = -1; goto cleanup; }
 
     retval = victim_size;
 cleanup:
