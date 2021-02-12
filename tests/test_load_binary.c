@@ -38,6 +38,8 @@ int __wrap_lstat (const char *__restrict __file,
     int retval = mock_type(int);
     if (retval != 0) { return retval; }
 
+    __buf->st_size = 4096;
+
     return retval;
 }
 
@@ -116,12 +118,34 @@ static void test_mmap_failure(void ** state)
 }
 
 
+static void test_load_binary_success(void ** state)
+{
+    int retval = 0;
+    int binary_size = 4096;
+    void *mapped_victim = NULL;
+    const char *binary_name = "bad.bin";
+    will_return(__wrap_open, 4);
+    will_return(__wrap_lstat, 0);
+    will_return(__wrap_mmap, mapped_victim);
+
+    expect_string(__wrap_open, __path, binary_name);
+    expect_value(__wrap_open, __oflag, O_RDWR);
+    expect_string(__wrap_lstat, __file, binary_name);
+    expect_value(__wrap_lstat, __buf->st_size, 0);
+
+    retval = load_binary(binary_name, &mapped_victim);
+    assert_int_equal(retval, binary_size);
+
+}
+
+
 int main (){
     const struct CMUnitTest tests[] =
     {
         cmocka_unit_test(test_open_failure),
         cmocka_unit_test(test_lstat_failure),
-        cmocka_unit_test(test_mmap_failure)
+        cmocka_unit_test(test_mmap_failure),
+        cmocka_unit_test(test_load_binary_success)
     };
 
     int count_fail_tests = cmocka_run_group_tests(tests, NULL, NULL);
