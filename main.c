@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <string.h>
 
+#include "data.h"
 #include "helpers.h"
 #include "binary_parsing.h"
 
