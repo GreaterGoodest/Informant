@@ -14,7 +14,10 @@ def load_payload(payload_path: str) -> ByteString:
             payload binary data
 
     """
-    return ""
+    with open(payload_path, 'r') as payload:
+        payload_data = payload.read()
+
+    return payload_data
 
 
 def pad_payload(payload_data: ByteString) -> ByteString:
@@ -50,10 +53,11 @@ def stamp_data(informant_path: str, padded_payload: ByteString) -> None:
 def stamp_payload(payload_path: str, informant_path: str):
     """ Main function for stamping informant with payload to eventually place in target binary """
     payload_data = load_payload(payload_path)
-    padded_payload = pad_payload(payload_data)
+    print(payload_data)
+   #padded_payload = pad_payload(payload_data)
 
-    informant_path = ""
-    stamp_data(informant_path, padded_payload)
+    #informant_path = ""
+    #stamp_data(informant_path, padded_payload)
 
 
 def print_help() -> None:
